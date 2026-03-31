@@ -8,4 +8,8 @@ Run the cli_support.py file to actually use the program.
 To get a better overview of what you can do use --help in your cli arguments.
 For example, python cli_support.py --help.
 
-For more of my projects go to https://github.com/SavegeCoding
+Feel free to make pull requests; any debugging help is especially appreciated.
+
+I will add better comments to the code later on.
+
+For more of my projects, go to https://github.com/SavegeCoding.
