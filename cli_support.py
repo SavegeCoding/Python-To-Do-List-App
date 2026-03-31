@@ -1,7 +1,7 @@
 import argparse
-import task_manager
+import todo_list_app
 
-parser = argparse.ArgumentParser("Basic task manager app")
+parser = argparse.ArgumentParser("Basic to do list app")
 subparsers = parser.add_subparsers(dest="command", required=True)
 
 create_parser = subparsers.add_parser("create", help="Create a task")
@@ -50,30 +50,30 @@ mark_undone_parser.add_argument("--unmark-all", action="store_true", help="Mark 
 
 args = parser.parse_args()
 
-task_manager.default_json_write()
+todo_list_app.default_json_write()
 
-tasks_lst = task_manager.load_tasks() 
+tasks_lst = todo_list_app.load_tasks() 
 
 show_successful_message = True
 
-if task_manager.load_tasks(show_error=True):
+if todo_list_app.load_tasks(show_error=True):
     if args.command == "create":
         create_tags_lst = [args.create_tag1, args.create_tag2, args.create_tag3]
         create_tags_lst = sorted([tag.strip().lower() for tag in create_tags_lst if tag.strip()], key=str.lower)
 
-        task = task_manager.create_task(args.create_title.strip().lower(), args.create_priority, create_tags_lst)
+        task = todo_list_app.create_task(args.create_title.strip().lower(), args.create_priority, create_tags_lst)
 
         if args.allow_duplicates:
             tasks_lst.append(task)
-        elif not task_manager.is_duplicate_task(tasks_lst, task):
+        elif not todo_list_app.is_duplicate_task(tasks_lst, task):
             tasks_lst.append(task)
-        elif task_manager.is_duplicate_task(tasks_lst, task):
+        elif todo_list_app.is_duplicate_task(tasks_lst, task):
             show_successful_message = False
             print("\nDuplicate task already exists.")
 
     if args.command == "filter":
         print("\nFiltered tasks:\n")
-        filtered_tasks_list = task_manager.filter_tasks(tasks_lst, args.filter_by_priority, args.filter_by_tag.strip().lower()) if args.filter_by_tag.strip().lower() else task_manager.filter_tasks(tasks_lst, args.filter_by_priority)
+        filtered_tasks_list = todo_list_app.filter_tasks(tasks_lst, args.filter_by_priority, args.filter_by_tag.strip().lower()) if args.filter_by_tag.strip().lower() else todo_list_app.filter_tasks(tasks_lst, args.filter_by_priority)
         for task in filtered_tasks_list:
             if not task["done"]:
                 print(f"[] Task: {task['title']} | Priority: {task['priority']} | Tags: {task['tags']}")
@@ -91,7 +91,7 @@ if task_manager.load_tasks(show_error=True):
 
         if args.sorted_overview:
             print("\nSorted overview:")
-            grouped_tasks = task_manager.group_tasks_by_tag(tasks_lst)
+            grouped_tasks = todo_list_app.group_tasks_by_tag(tasks_lst)
             for tag, tasks in grouped_tasks.items():
                 for task in tasks:
                     if not task["done"]:
@@ -106,18 +106,18 @@ if task_manager.load_tasks(show_error=True):
         done_tags_lst = sorted([tag.strip().lower() for tag in done_tags_lst if tag.strip()], key=str.lower)
 
         if not done_tags_lst:
-            tasks_lst = task_manager.mark_tasks(tasks_lst=tasks_lst, task_to_mark=args.done_title.strip().lower(), mark_done=True, mark_all=True) if args.mark_all else task_manager.mark_tasks(tasks_lst=tasks_lst, mark_done=True, task_to_mark=args.done_title.strip().lower(), mark_all=False)
+            tasks_lst = todo_list_app.mark_tasks(tasks_lst=tasks_lst, task_to_mark=args.done_title.strip().lower(), mark_done=True, mark_all=True) if args.mark_all else todo_list_app.mark_tasks(tasks_lst=tasks_lst, mark_done=True, task_to_mark=args.done_title.strip().lower(), mark_all=False)
         if done_tags_lst:
-            tasks_lst = task_manager.mark_tasks(tasks_lst=tasks_lst, task_to_mark=args.done_title.strip().lower(), mark_done=True, tags=done_tags_lst, mark_all=True) if args.mark_all else task_manager.mark_tasks(tasks_lst=tasks_lst, mark_done=True, task_to_mark=args.done_title.strip().lower(), tags=done_tags_lst, mark_all=False)
+            tasks_lst = todo_list_app.mark_tasks(tasks_lst=tasks_lst, task_to_mark=args.done_title.strip().lower(), mark_done=True, tags=done_tags_lst, mark_all=True) if args.mark_all else todo_list_app.mark_tasks(tasks_lst=tasks_lst, mark_done=True, task_to_mark=args.done_title.strip().lower(), tags=done_tags_lst, mark_all=False)
 
     if args.command == "mark-undone":
         undone_tags_lst = [args.undone_tag1, args.undone_tag2, args.undone_tag3]
         undone_tags_lst = sorted([tag.strip().lower() for tag in undone_tags_lst if tag.strip()], key=str.lower)
 
         if not undone_tags_lst:
-            tasks_lst = task_manager.mark_tasks(tasks_lst=tasks_lst, task_to_mark=args.undone_title.strip().lower(), mark_done=False, mark_all=True) if args.unmark_all else task_manager.mark_tasks(tasks_lst=tasks_lst, mark_done=False, task_to_mark=args.undone_title.strip().lower(), mark_all=False)
+            tasks_lst = todo_list_app.mark_tasks(tasks_lst=tasks_lst, task_to_mark=args.undone_title.strip().lower(), mark_done=False, mark_all=True) if args.unmark_all else todo_list_app.mark_tasks(tasks_lst=tasks_lst, mark_done=False, task_to_mark=args.undone_title.strip().lower(), mark_all=False)
         if undone_tags_lst:
-            tasks_lst = task_manager.mark_tasks(tasks_lst=tasks_lst, task_to_mark=args.undone_title.strip().lower(), mark_done=False, tags=undone_tags_lst, mark_all=True) if args.unmark_all else task_manager.mark_tasks(tasks_lst=tasks_lst, mark_done=False, task_to_mark=args.undone_title.strip().lower(), tags=undone_tags_lst, mark_all=False)
+            tasks_lst = todo_list_app.mark_tasks(tasks_lst=tasks_lst, task_to_mark=args.undone_title.strip().lower(), mark_done=False, tags=undone_tags_lst, mark_all=True) if args.unmark_all else todo_list_app.mark_tasks(tasks_lst=tasks_lst, mark_done=False, task_to_mark=args.undone_title.strip().lower(), tags=undone_tags_lst, mark_all=False)
 
     if args.command == "delete":
         delete_tags_lst = [args.delete_tag1, args.delete_tag2, args.delete_tag3]
@@ -126,24 +126,24 @@ if task_manager.load_tasks(show_error=True):
 
         if args.delete_all and not args.delete_all_but_one:
             if delete_tags_lst:
-                tasks_lst = task_manager.delete_task(tasks_lst, task_to_delete, True, True)
+                tasks_lst = todo_list_app.delete_task(tasks_lst, task_to_delete, True, True)
             else:
-                tasks_lst = task_manager.delete_task(tasks_lst, task_to_delete, False, True)
+                tasks_lst = todo_list_app.delete_task(tasks_lst, task_to_delete, False, True)
 
         elif args.delete_all_but_one:
             if delete_tags_lst:
-                tasks_lst = task_manager.delete_task(tasks_lst, task_to_delete, True, False, True)
+                tasks_lst = todo_list_app.delete_task(tasks_lst, task_to_delete, True, False, True)
             else:
-                tasks_lst = task_manager.delete_task(tasks_lst, task_to_delete, False, False, True)
+                tasks_lst = todo_list_app.delete_task(tasks_lst, task_to_delete, False, False, True)
 
         else:
             if delete_tags_lst:
-                tasks_lst = task_manager.delete_task(tasks_lst, task_to_delete, True)
+                tasks_lst = todo_list_app.delete_task(tasks_lst, task_to_delete, True)
             else:
-                tasks_lst = task_manager.delete_task(tasks_lst, task_to_delete, False)
+                tasks_lst = todo_list_app.delete_task(tasks_lst, task_to_delete, False)
 
     if args.command == "delete-done":
-        tasks_lst = task_manager.delete_finished_task(tasks_lst) 
+        tasks_lst = todo_list_app.delete_finished_task(tasks_lst) 
 
     if args.command == "delete-all-tasks":
         tasks_lst = []
@@ -152,13 +152,13 @@ if task_manager.load_tasks(show_error=True):
         print("\nNo invalid save data. If you want to delete your tasks use the delete (controlled) or the delete-all (delete everything) command instead")
         show_successful_message = False
 
-    task_manager.save_tasks(tasks_lst)
+    todo_list_app.save_tasks(tasks_lst)
 
     if show_successful_message:
         print("\nSuccessfully finished operations!")
 
 elif args.command == "fix-save":
-    task_manager.default_json_write(write_safety_data=True)
+    todo_list_app.default_json_write(write_safety_data=True)
     print("\nDeleted corrupted save data.")
 
 else:

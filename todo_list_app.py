@@ -15,7 +15,7 @@ default_json_code = [
                 ]
 
 #function for handling an empty task_manager.json file
-def default_json_write(filename: str = "task_manager.json", write_safety_data = False):
+def default_json_write(filename: str = "todo_list_app.json", write_safety_data = False):
     try:
         if write_safety_data:
             with open(filename, "w") as f:
@@ -35,12 +35,12 @@ def default_json_write(filename: str = "task_manager.json", write_safety_data = 
         pass
 
 #function for saving tasks
-def save_tasks(tasks_lst, filename: str = "task_manager.json") -> None:
+def save_tasks(tasks_lst, filename: str = "todo_list_app.json") -> None:
     with open(filename, "w") as f:
         json.dump(tasks_lst, f, indent=4)
 
 #function for loading tasks
-def load_tasks(filename = "task_manager.json", show_error = False):
+def load_tasks(filename = "todo_list_app.json", show_error = False):
     try:
         with open(filename, "r") as f:
             data = json.load(f)
@@ -65,7 +65,7 @@ def load_tasks(filename = "task_manager.json", show_error = False):
 
     except Exception as e:
         if show_error:
-            print(f"Cannot load tasks from task_manager.json. The error was {e}")
+            print(f"Cannot load tasks from todo_list_app.json. The error was {e}")
             return False
         else:
             return False
@@ -148,7 +148,6 @@ def delete_task(tasks_lst, task_to_delete: dict, delete_by_tags: bool, delete_al
                 if not seen:
                     new_tasks.append(task)  # keep the first one
                     seen = True
-                # else: skip (delete duplicates)
             else:
                 new_tasks.append(task)
 

@@ -3,4 +3,6 @@ This is a python to do list app I created.
 It's not completely finished yet, but this version (at least the last time I checked it)
 is working.
 
+Run the cli_support.py file to actually run the program
+
 For more of my projects go to https://github.com/SavegeCoding
